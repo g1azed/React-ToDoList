@@ -1,15 +1,14 @@
 # React-ToDoList
 > 리액트로 간단한 투두리스트 구현해보기
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
-한 두 문단으로 프로젝트 소개 글을 작성합니다.
-
-![](../header.png)
-
 ## 구현 기능 리스트
+
+* useState 
+
+```
+    const [todos, setTodos] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+```
 
 * 글자 제출
     ```
@@ -31,6 +30,8 @@
     * 글자 수가 20자 이상일 때에는 제출 금지
     * *some() : 배열 안의 어떤 요소라도 주어진 판별 함수를 적어도 하나라도 통과하는지 테스트하는 JS메서드
     * *trim() : 양 끝의 공백을 제거하고 원본 문자열 그대로 다시 새로운 문자열로 반환하는 JS메서드
+
+
 * 글자 삭제
 ```
     const handleDeleteTodo = (index) => {
@@ -38,13 +39,28 @@
         setTodos(updatedTodos);
     };
 ```
-    * 수정: `setDefaultXYZ()` 메서드 제거
-    * 추가: `init()` 메서드 추가
+    * 
+
 * 해낸 일 체크
-    * 버그 수정: `baz()` 메서드 호출 시 부팅되지 않는 현상 (@컨트리뷰터 감사합니다!)
+```
+    const handleToggleTodo = (index) => {
+        const updatedTodos = todos.map((todo, i) => {
+            if (i === index) {
+                return { ...todo, checked: !todo.checked };
+            }
+            return todo;
+        });
+        setTodos(updatedTodos);
+    };
+```
+
+
 * 전체 삭제
-    * 첫 출시
-    * 수정: `foo()` 메서드 네이밍을 `bar()`로 수정
+```
+    const handleDeleteAll = () => {
+        setTodos([]);
+    };
+```
 
 
 ## 전체코드

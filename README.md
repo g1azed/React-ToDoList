@@ -29,7 +29,15 @@
     ```
     * 이미 제출 된 리스트 중 제출하려는 리스트와 중복될 시 제출 금지
     * 글자 수가 20자 이상일 때에는 제출 금지
+    * *some() : 배열 안의 어떤 요소라도 주어진 판별 함수를 적어도 하나라도 통과하는지 테스트하는 JS메서드
+    * *trim() : 양 끝의 공백을 제거하고 원본 문자열 그대로 다시 새로운 문자열로 반환하는 JS메서드
 * 글자 삭제
+```
+    const handleDeleteTodo = (index) => {
+        const updatedTodos = todos.filter((_, i) => i !== index);
+        setTodos(updatedTodos);
+    };
+```
     * 수정: `setDefaultXYZ()` 메서드 제거
     * 추가: `init()` 메서드 추가
 * 해낸 일 체크
@@ -39,26 +47,89 @@
     * 수정: `foo()` 메서드 네이밍을 `bar()`로 수정
 
 
-## 정보
+## 전체코드
+```
+import React, { useState } from 'react';
+import './reset.css'
+import './todolist.css'
 
-이름 – [@트위터 주소](https://twitter.com/dbader_org) – 이메일주소@example.com
+function TodoList() {
+    const [todos, setTodos] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
-XYZ 라이센스를 준수하며 ``LICENSE``에서 자세한 정보를 확인할 수 있습니다.
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+    const handleAddTodo = () => {
+        if (inputValue.trim() !== '') {
+            const isDuplicate = todos.some((todo) => todo.text === inputValue);
+            if (isDuplicate) {
+                alert('이미 추가된 할 일입니다.');
+            } else if (inputValue.length > 20) {
+                alert('할 일은 20자 이하로 입력해주세요.');
+            } else {
+                setTodos([...todos, { text: inputValue, checked: false }]);
+            }
+            setInputValue('');
+        }
+    };
 
-## 기여 방법
 
-1. (<https://github.com/yourname/yourproject/fork>)을 포크합니다.
-2. (`git checkout -b feature/fooBar`) 명령어로 새 브랜치를 만드세요.
-3. (`git commit -am 'Add some fooBar'`) 명령어로 커밋하세요.
-4. (`git push origin feature/fooBar`) 명령어로 브랜치에 푸시하세요. 
-5. 풀리퀘스트를 보내주세요.
+    const handleToggleTodo = (index) => {
+        const updatedTodos = todos.map((todo, i) => {
+            if (i === index) {
+                return { ...todo, checked: !todo.checked };
+            }
+            return todo;
+        });
+        setTodos(updatedTodos);
+    };
 
-<!-- Markdown link & img dfn's -->
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
+    const handleDeleteTodo = (index) => {
+        const updatedTodos = todos.filter((_, i) => i !== index);
+        setTodos(updatedTodos);
+    };
+
+    const handleDeleteAll = () => {
+        setTodos([]);
+    };
+
+    return (
+        <div>
+            <h1> THINGS TO DO : </h1>
+            <div className="add-wrap">
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Enter a todo"
+                />
+                <button className="btn add-btn" onClick={handleAddTodo}> Add </button>
+                <button className="btn delete-all-btn" onClick={handleDeleteAll}>Delete All</button>
+            </div>
+
+            <ul>
+                {todos.map((todo, index) => (
+                    <li
+                        key={index}
+                        style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}
+                        className="list-li"
+                    >
+                        <input
+                            type="checkbox"
+                            checked={todo.checked}
+                            onChange={() => handleToggleTodo(index)}
+                        />
+                        <p className="list-text"> {todo.text} </p>
+                        <button className="btn delete-btn"onClick={() => handleDeleteTodo(index)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+export default TodoList;
+```
+
